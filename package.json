@@ -1,0 +1,21 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lambda-api": "^0.10.6",
+    "aws-sdk": "^2.834.0",
+    "axios": "^0.21.1",
+    "bignumber.js": "^9.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
+    "moment-timezone": "^0.5.32",
+    "mysql2": "^2.2.5"
+  }
+}

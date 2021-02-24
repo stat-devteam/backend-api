@@ -1,0 +1,34 @@
+Parameters:
+  AppId:
+    Type: String
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+Resources:
+  backend:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: lambda/index.handler
+      Runtime: nodejs12.x
+      Description: 'BackEnd Lambda Index'
+      MemorySize: 128
+      Timeout: 120
+      Role: 'arn:aws:iam::180677353921:role/CoredotLambdaSQSRDSCogSMRole'
+      AutoPublishAlias: live
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-0d2984c17634f9cd2
+        SubnetIds:
+          - subnet-0a51c713e5dfb2a1f
+          - subnet-078d73d2a5d259f32
+      Environment:
+        Variables:
+          DB_NAME: shift
+          DB_PORT: '3306'
+          DB_USER: shift_lambda
+          DB_ENDPOINT: hk-shift-real-aurora-cluster.cluster-c89v5jzuome9.ap-northeast-2.rds.amazonaws.com
+          DB_SM_ID : shift/release/aurora/shift_lambda
+          REGION: ap-northeast-2
+          PLAN_ID : 0rceel
+          SM_ID : shift/release/kasinfo
+          COGNITO_USER_POOL_ID : ap-northeast-2_6L7cvxGnb

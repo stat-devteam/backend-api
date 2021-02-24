@@ -1,0 +1,107 @@
+{
+    "link_get_list" : {
+        "queryString" : "SELECT l.*, s.name as svc_name, s.description as svc_desc, sg.name as sg_name from link l LEFT OUTER JOIN service s ON l.svc_id = s.svc_num LEFT OUTER JOIN service_group sg ON l.svc_grp_id = sg.svc_grp_id WHERE l.reg_dt BETWEEN ? AND ? AND l.svc_grp_id IN (?) ORDER BY reg_dt;",
+        "params" : ["start_date", "end_date", "svc_grp_id"],
+        "desc" : "link get list by date_range"
+    },
+    "service_group_get_all" : {
+        "queryString": "SELECT * FROM service_group",
+        "params": [],
+        "desc": "service_group get ALL"
+    },
+    "link_check_registered" : {
+        "queryString": "SELECT * FROM link WHERE mbr_id= ? AND mbr_grp_id=?",
+        "params": ["mbr_id", "mbr_grp_id"],
+        "desc": "link check registered"
+    },
+    "service_get" : {
+        "queryString": "SELECT * FROM service WHERE svc_num = ?",
+        "params": ["svc_num"],
+        "desc": "service get"
+    },
+    "check_link": {
+        "queryString": "SELECT * FROM link WHERE mbr_id = ? AND mbr_grp_id = ?",
+        "params": ["memberId", "memberGroupId"],
+        "desc": "이미 링크 생성되어 있는지 확인"
+    },
+    "check_hk_klayton" : {
+        "queryString": "SELECT * FROM hankyung_klaytn_account WHERE accnt_id = (SELECT accnt_id FROM service_group WHERE svc_grp_id = (SELECT svc_grp_id FROM service WHERE svc_num = ? ))",
+        "params": ["serviceNumber"],
+        "desc": "해당 serviceNumber 한경 클레이튼 계정 확인"
+    },
+    "insert_memo" : {
+        "queryString": "INSERT INTO svc_memo(memo) VALUES( ? )",
+        "params": ["memo"],
+        "desc": "새 메모 추가"
+    },
+    "insert_transfer" : {
+        "queryString": "INSERT INTO transfer(type, svc_num, link_num, amount, fee, transfer_reg_dt, transfer_end_dt, tx_hash, tx_status, job_status, job_fetched_dt, svc_callback_seq, svc_memo_seq, link_accnt_before_balance) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        "params": ["transferType", "serviceNumber", "linkNumber", "pebAmount", "fee", "now", "transferEndDate", "txHash", "txStatus", "jobStatus", "now", "serviceCallbackId", "memoSeq", "currentBalance"],
+        "desc": "클레이 전송 후, transfer insert"
+    },
+    "update_transfer" : {
+        "queryString" : "UPDATE transfer SET tx_status = ?, transfer_end_dt = now(), job_status = 'done', fee= ? WHERE transfer_seq = ?",
+        "params" :  ["newStatus", "completeDate", "transferSeq"],
+        "desc" : "polling 이후 transfer update fee를 이 시점에 알 수 있다."
+    },
+    "update_transfer_tx_job_fee_hash": {
+        "queryString" : "UPDATE transfer SET tx_status = ?, job_status =?, fee =?, tx_hash = ?, transfer_end_dt = now() WHERE transfer_seq = ?",
+        "params" :  ["tx_status","job_status", "fee","tx_hash","completeDate", "transferSeq"],
+        "desc" : "tx_status, job_status, fee update"
+    },
+    "update_transfer_tx_job_hash": {
+        "queryString" : "UPDATE transfer SET tx_status = ?, job_status =?, tx_hash = ?, transfer_end_dt = now() WHERE transfer_seq = ?",
+        "params" :  ["tx_status","job_status","tx_hash","completeDate", "transferSeq"],
+        "desc" : "tx_status, job_status, fee update"
+    },
+    "update_transfer_tx_job": {
+        "queryString" : "UPDATE transfer SET tx_status = ?, job_status =?, transfer_end_dt = now() WHERE transfer_seq = ?",
+        "params" :  ["tx_status","job_status","completeDate", "transferSeq"],
+        "desc" : "tx_status, job_status, fee update"
+    },
+    "transfer_status" : {
+        "queryString" : "SELECT * FROM transfer WHERE transfer_seq =?",
+        "params" :  ["transferId"],
+        "desc" : "Async 배치 작업 이후 tx status check"
+    },
+    "reward_que_insert" : {
+        "queryString" : "INSERT INTO reward_queue(svc_num, mbr_id, mbr_grp_id, amount, reg_dt, reserve_dt, expire_dt, job_status, job_fetched_dt, svc_callback_seq, svc_memo_seq) VALUES (?,?,?,?, now(),?,?,?,?,?,?)",
+        "params" :  ["svc_num, mbr_id, mbr_grp_id, amount, reserve_dt, expire_dt, job_status, job_fetched_dt, svc_callback_seq, svc_memo_seq"],
+        "desc" : "promise reward 큐 생성"
+    },
+    "service_callback_insert" : {
+        "queryString": "INSERT INTO service_callback(callback_status, callback_url) VALUES ('ready' , ?)",
+        "params": ["callback_url"],
+        "desc": "service callback insert with ready status"
+    },
+    "service_get" : {
+        "queryString": "SELECT * FROM service WHERE svc_num = ?",
+        "params": ["svc_num"],
+        "desc": "service get"
+    },
+    "transfer_status_update": {
+        "queryString": "UPDATE transfer SET tx_status = ?, job_status = ? WHERE transfer_seq = ?",
+        "params": ["tx_status", "job_status", "transferSeq"],
+        "desc": "transfer update tx_status, job_status"
+    },
+    "transfer_status_hash_update": {
+        "queryString": "UPDATE transfer SET tx_status = ?, job_status = ?, tx_hash = ? WHERE transfer_seq = ?",
+        "params": ["tx_status", "job_status", "tx_hash", "transferSeq"],
+        "desc": "transfer update tx,job,hash"
+    },
+    "error_log_insert" : {
+        "queryString" : "INSERT INTO error_log(type,code,message) VALUES (?,?,?)",
+        "params" : ["type", "code", "message"],
+        "desc": "insert new error_log"
+    },
+    "reward_log_update" : {
+        "queryString" : "UPDATE reward_queue SET log_seq = ? WHERE rwd_q_seq = ?",
+        "params" : ["log_seq", "rwd_q_seq"],
+        "desc": "reward_log_update"
+    },
+    "transfer_log_update" : {
+        "queryString" : "UPDATE transfer SET log_seq = ? WHERE transfer_seq = ?",
+        "params" : ["log_seq", "transfer_seq"],
+        "desc": "transfer_log_update"
+    }
+}
