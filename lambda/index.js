@@ -17,7 +17,7 @@ api.use(['/admin/*', '/clearCache'], (req, res, next) => {
 });
 
 api.finally((req, res) => {
-    console.log("api.finally");
+    console.log("api.finally!");
 });
 
 api.get('/clearCache', async(req, res) => {
