@@ -178,7 +178,7 @@ const reward_async_POST = async(req, res) => {
         console.log('[KAS] sendBody', sendBody)
 
         const sendResponse = await axios
-            .post(kasInfo.apiUrl + 'tx/value', sendBody, {
+            .post(kasInfo.apiUrl + 'tx/fd/value', sendBody, {
                 headers: axiosHeader,
             })
             .catch((err) => {
