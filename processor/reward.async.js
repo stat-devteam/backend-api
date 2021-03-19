@@ -190,11 +190,11 @@ const reward_async_POST = async(req, res) => {
             let message = sendResponse.error.data.message;
 
             let errorBody = {
-                code: 2001,
+                code: 2002,
                 message: '[KAS] 클레이 전송 실패',
                 info: '[' + code + '] ' + message
             }
-            console.log('[400] - (2001) 클레이 전송 실패');
+            console.log('[400] - (2002) 클레이 전송 실패');
             console.log('[SEND KLAY ERROR]', sendResponse.error);
             const [updateResult, f1] = await pool.query(dbQuery.update_transfer_tx_job.queryString, ['fail', 'done', transferSeq]);
             console.log('[Transfer Table Update] updateResult', updateResult)
@@ -249,7 +249,10 @@ const reward_async_POST = async(req, res) => {
 
 
 const sendRes = (res, status, body) => {
-    return res.status(status).cors().json(body);
+    return res.status(status).cors({
+        exposeHeaders: 'maintenance',
+        headers: 'pass',
+    }).json(body);
 };
 
 module.exports = { reward_async_POST };

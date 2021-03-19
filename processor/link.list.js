@@ -11,6 +11,8 @@ const link_list_GET = async(req, res) => {
         const startDate = req.query.startDate;
         const endDate = req.query.endDate;
         let serviceGroupId = req.query.serviceGroupId;
+        const type = req.query.type;
+
 
         if (!startDate || !endDate) {
             return sendRes(res, 400, { code: 3000, message: '요청 파라미터 확인' })
@@ -28,12 +30,20 @@ const link_list_GET = async(req, res) => {
         }
         console.log('serviceGroupId', serviceGroupId)
 
-        const [linkAllResult, f2] = await pool.query(dbQuery.link_get_list.queryString, [startDate, endDate, serviceGroupId]);
+        if (type === 'count') {
+            const [linkCountResult, f2] = await pool.query(dbQuery.link_get_list_count.queryString, [startDate, endDate, serviceGroupId]);
+            return sendRes(res, 200, {
+                count: linkCountResult[0].count,
+            });
 
+        }
+        else {
+            const [linkAllResult, f2] = await pool.query(dbQuery.link_get_list.queryString, [startDate, endDate, serviceGroupId]);
+            return sendRes(res, 200, {
+                list: linkAllResult,
+            });
+        }
 
-        return sendRes(res, 200, {
-            list: linkAllResult,
-        });
 
     }
     catch (err) {
@@ -46,7 +56,10 @@ const link_list_GET = async(req, res) => {
 
 
 const sendRes = (res, status, body) => {
-    return res.status(status).cors().json(body);
+    return res.status(status).cors({
+        exposeHeaders: 'maintenance',
+        headers: 'pass',
+    }).json(body);
 };
 
 module.exports = { link_list_GET };
