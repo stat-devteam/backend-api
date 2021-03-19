@@ -30,3 +30,4 @@ Resources:
           REGION: ap-northeast-2
           PLAN_ID : was7u8
           SM_ID : shift/product/kasinfo
+          PARAMETER_STORE_VALUE : 'dev_maintenance'

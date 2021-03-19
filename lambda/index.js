@@ -2,6 +2,9 @@
 
 const api = require('lambda-api')();
 const smHandler = require("../modules/util_sm.js");
+const psHandler = require('../modules/util_ps.js');
+var Base64 = require("js-base64");
+
 
 const testProcessor = require('../processor/test.js');
 const linkListProcessor = require('../processor/link.list.js');
@@ -10,6 +13,21 @@ const rewardAsyncProcessor = require('../processor/reward.async.js');
 const rewardStatusProcessor = require('../processor/reward.status.js');
 const rewardSyncProcessor = require('../processor/reward.sync.js');
 const rewardPromiseProcessor = require('../processor/reward.promise.js');
+
+api.use(['/*'], async(req, res, next) => {
+    console.log('Maintenance - ParameterStore Check res', res);
+    console.log('Maintenance - ParameterStore Check req', req);
+    const pass = req.query.pass;
+    const isMaintenance = await psHandler.getParameterStoreValue(process.env.PARAMETER_STORE_VALUE, 'backend', pass);
+    console.log('isMaintenance', isMaintenance)
+    if (isMaintenance) {
+        return res.status(400).cors().json({
+            message: JSON.parse(Base64.decode(isMaintenance)).message,
+        });
+    }
+    next();
+});
+
 
 api.use(['/admin/*', '/clearCache'], (req, res, next) => {
     console.log(req.coldStart, req.requestCount, req.ip, req.method, req.path, req);
@@ -23,7 +41,9 @@ api.finally((req, res) => {
 api.get('/clearCache', async(req, res) => {
     console.log('clearCache', req);
     smHandler.clearCache();
-    return { status: 'ok' };
+    psHandler.clearCache();
+    let body = { result: true };
+    return res.status(200).cors().json(body);
 });
 
 

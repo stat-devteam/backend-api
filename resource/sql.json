@@ -4,6 +4,11 @@
         "params" : ["start_date", "end_date", "svc_grp_id"],
         "desc" : "link get list by date_range"
     },
+    "link_get_list_count" : {
+         "queryString" : "SELECT count(*) as count from link WHERE reg_dt BETWEEN ? AND ? AND svc_grp_id IN (?)",
+        "params" : ["start_date", "end_date", "svc_grp_id"],
+        "desc" : "link get total count by date_range"
+    },
     "service_group_get_all" : {
         "queryString": "SELECT * FROM service_group",
         "params": [],
