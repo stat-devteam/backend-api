@@ -32,3 +32,4 @@ Resources:
           PLAN_ID : 0rceel
           SM_ID : shift/release/kasinfo
           COGNITO_USER_POOL_ID : ap-northeast-2_6L7cvxGnb
+          PARAMETER_STORE_VALUE : 'release_maintenance'
