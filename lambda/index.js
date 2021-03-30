@@ -57,6 +57,13 @@ api.post('/reward/promise', rewardPromiseProcessor.reward_promise_POST);
 
 
 exports.handler = async(event, context, callback) => {
-    context.callbackWaitsForEmptyEventLoop = false;
-    return await api.run(event, context);
+    const type = event.type;
+    if (type === 'alive-check') {
+        console.log('[Alive-Check]')
+        return;
+    }
+    else {
+        context.callbackWaitsForEmptyEventLoop = false;
+        return await api.run(event, context);
+    }
 };
