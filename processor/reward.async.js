@@ -148,7 +148,8 @@ const reward_async_POST = async(req, res) => {
             now,
             serviceCallbackSeq,
             memoSeq,
-            currentBalance
+            currentBalance,
+            userKlaytnAddress
         ]);
         console.log('[SQL] transfer before_submit insertResult', insertResult);
         const transferSeq = insertResult.insertId;
