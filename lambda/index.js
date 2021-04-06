@@ -13,6 +13,7 @@ const rewardAsyncProcessor = require('../processor/reward.async.js');
 const rewardStatusProcessor = require('../processor/reward.status.js');
 const rewardSyncProcessor = require('../processor/reward.sync.js');
 const rewardPromiseProcessor = require('../processor/reward.promise.js');
+const hkAccountInfoProcessor = require('../processor/hkAccount.info.js');
 
 api.use(['/*'], async(req, res, next) => {
     console.log('Maintenance - ParameterStore Check res', res);
@@ -54,6 +55,7 @@ api.post('/reward/async', rewardAsyncProcessor.reward_async_POST);
 api.get('/reward/status', rewardStatusProcessor.reward_status_GET);
 api.post('/reward/sync', rewardSyncProcessor.reward_sync_POST);
 api.post('/reward/promise', rewardPromiseProcessor.reward_promise_POST);
+api.get('/hkAccount/info', hkAccountInfoProcessor.hkAccount_info_GET);
 
 
 exports.handler = async(event, context, callback) => {

@@ -20,6 +20,7 @@ const link_exist_GET = async(req, res) => {
         if (linkCheckRegisteredResult.length > 0) {
             let alreadyBody = {
                 result: true,
+                info: linkCheckRegisteredResult[0],
             };
 
             return sendRes(res, 200, alreadyBody);
