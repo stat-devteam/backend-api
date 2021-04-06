@@ -108,5 +108,10 @@
         "queryString" : "UPDATE transfer SET log_seq = ? WHERE transfer_seq = ?",
         "params" : ["log_seq", "transfer_seq"],
         "desc": "transfer_log_update"
+    },
+    "hankyung_klaytn_account_get_by_accnt_id" : {
+        "queryString" : "select * from hankyung_klaytn_account where accnt_id = ?",
+        "params" : ["accnt_id"],
+        "desc": "hankyung_klaytn_account_get_by_accnt_id"
     }
 }
