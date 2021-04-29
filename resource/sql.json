@@ -113,5 +113,35 @@
         "queryString" : "select * from hankyung_klaytn_account where accnt_id = ?",
         "params" : ["accnt_id"],
         "desc": "hankyung_klaytn_account_get_by_accnt_id"
+    },
+    "link_cancel_insert" : {
+        "queryString": "INSERT INTO link_cancel (link_num,mbr_grp_id,mbr_id,klip_address,reg_dt,svc_grp_id,svc_id,klip_new) VALUES (?,?,?,?,?,?,?,?)",
+        "params": ["link_num","mbr_grp_id","mbr_id","klip_address","reg_dt","svc_grp_id","svc_id","klip_new"],
+        "desc": "link_cancel insert"
+    },
+    "link_delete" : {
+        "queryString": "DELETE FROM link WHERE mbr_id= ? AND mbr_grp_id=?",
+        "params": ["mbr_id", "mbr_grp_id"],
+        "desc": "link delete"
+    },
+    "link_temp_delete" : {
+        "queryString": "DELETE FROM link_temp WHERE mbr_id= ? AND mbr_grp_id=?",
+        "params": ["mbr_id", "mbr_grp_id"],
+        "desc": "link delete"
+    },
+    "link_cancel_delete" : {
+        "queryString": "DELETE FROM link_cancel WHERE mbr_id= ? AND mbr_grp_id=?",
+        "params": ["mbr_id", "mbr_grp_id"],
+        "desc": "link delete"
+    },
+    "link_cancel_get" : {
+        "queryString": "SELECT * FROM link_cancel WHERE mbr_id= ? AND mbr_grp_id=?",
+        "params": ["mbr_id", "mbr_grp_id"],
+        "desc": "link cancel get"
+    },
+    "link_insert" : {
+        "queryString": "INSERT INTO link(link_num, mbr_grp_id, mbr_id, klip_address, reg_dt, svc_grp_id, svc_id, klip_new) VALUES(?,?,?,?,?,?,?,?)",
+        "params": ["link_num", "mbr_grp_id", "mbr_id", "klip_address","reg_dt", "svc_grp_id","svc_id","klip_new"],
+        "desc": "link create"
     }
 }

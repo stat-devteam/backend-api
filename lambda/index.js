@@ -9,6 +9,8 @@ var Base64 = require("js-base64");
 const testProcessor = require('../processor/test.js');
 const linkListProcessor = require('../processor/link.list.js');
 const linkExistProcessor = require('../processor/link.exist.js');
+const linkCancelProcessor = require('../processor/link.cancel.js');
+const linkRecoveryProcessor = require('../processor/link.recovery.js');
 const rewardAsyncProcessor = require('../processor/reward.async.js');
 const rewardStatusProcessor = require('../processor/reward.status.js');
 const rewardSyncProcessor = require('../processor/reward.sync.js');
@@ -51,12 +53,13 @@ api.get('/clearCache', async(req, res) => {
 api.get('/test', testProcessor.test_GET);
 api.get('/link/list', linkListProcessor.link_list_GET);
 api.get('/link/exist', linkExistProcessor.link_exist_GET);
+api.post('/link/cancel', linkCancelProcessor.link_cancel_POST);
+api.post('/link/recovery', linkRecoveryProcessor.link_recovery_POST);
 api.post('/reward/async', rewardAsyncProcessor.reward_async_POST);
 api.get('/reward/status', rewardStatusProcessor.reward_status_GET);
 api.post('/reward/sync', rewardSyncProcessor.reward_sync_POST);
 api.post('/reward/promise', rewardPromiseProcessor.reward_promise_POST);
 api.get('/hkAccount/info', hkAccountInfoProcessor.hkAccount_info_GET);
-
 
 exports.handler = async(event, context, callback) => {
     const type = event.type;
