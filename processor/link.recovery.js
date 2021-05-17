@@ -8,7 +8,7 @@ const smHandler = require('../modules/util_sm.js');
 
 
 const link_recovery_POST = async(req, res) => {
-    console.log('[link_recovery_POST]');
+    console.log('[link_recovery_POST] req', req);
 
     let body = req.body;
     console.log('body', body);
