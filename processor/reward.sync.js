@@ -12,6 +12,7 @@ var { InsertLogSeq } = require("../modules/utils_error.js");
 
 const reward_sync_POST = async(req, res) => {
     const secretValue = await smHandler.getSecretValue(process.env.SM_ID);
+    console.log('[reward_sync_POST] req', req);
 
     try {
         const pool = await dbPool.getPool();

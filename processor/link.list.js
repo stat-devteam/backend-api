@@ -4,6 +4,7 @@ const dbPool = require('../modules/util_rds_pool.js');
 const dbQuery = require('../resource/sql.json');
 
 const link_list_GET = async(req, res) => {
+    console.log('[link_list_GET] req', req);
 
     try {
         const pool = await dbPool.getPool();

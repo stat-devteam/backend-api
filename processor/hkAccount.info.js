@@ -9,6 +9,7 @@ const kasInfo = require('../resource/kas.json');
 
 const hkAccount_info_GET = async(req, res) => {
     const secretValue = await smHandler.getSecretValue(process.env.SM_ID);
+    console.log('[hkAccount_info_GET] req', req);
 
     try {
         const pool = await dbPool.getPool();

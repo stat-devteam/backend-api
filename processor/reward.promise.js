@@ -9,10 +9,10 @@ const kasInfo = require('../resource/kas.json');
 var moment = require('moment-timezone');
 
 const reward_promise_POST = async(req, res) => {
+    console.log('[reward_promise_POST] req', req);
 
     try {
         const pool = await dbPool.getPool();
-        console.log('[Req] REWARD - PROMISE');
         const body = req.body;
         console.log('[Req] body', body)
 

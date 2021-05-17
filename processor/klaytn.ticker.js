@@ -11,6 +11,7 @@ const gdacInfo = require('../resource/gdac.json');
 const klaytn_ticker_GET = async(req, res) => {
 
     try {
+        console.log('[klaytn_ticker_GET] req', req);
         const secretValue = await smHandler.getSecretValue(process.env.SM_ID);
         console.log('secretValue', secretValue)
         let gdacApiKey = secretValue.gdac_api_key;

@@ -1,6 +1,8 @@
 'use strict';
 
 const test_GET = async(req, res) => {
+    console.log('[test_GET] req', req);
+
     return sendRes(200, { status: 'ok', num: 1 });
 }
 

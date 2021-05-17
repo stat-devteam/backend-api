@@ -8,8 +8,8 @@ const smHandler = require('../modules/util_sm.js');
 
 
 const link_cancel_POST = async(req, res) => {
-    console.log('[link_cancel_POST]');
-
+    console.log('[link_cancel_POST] req', req);
+    
     let body = req.body;
     console.log('body', body);
     const memberId = body.memberId;
