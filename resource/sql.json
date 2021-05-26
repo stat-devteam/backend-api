@@ -143,5 +143,20 @@
         "queryString": "INSERT INTO link(link_num, mbr_grp_id, mbr_id, klip_address, reg_dt, svc_grp_id, svc_id, klip_new) VALUES(?,?,?,?,?,?,?,?)",
         "params": ["link_num", "mbr_grp_id", "mbr_id", "klip_address","reg_dt", "svc_grp_id","svc_id","klip_new"],
         "desc": "link create"
+    },
+    "link_info_get" : {
+        "queryString": "SELECT l.*, s.name as svc_name, s.description as svc_desc,sg.name as svc_grp_name from link l left outer join service s on  l.svc_id = s.svc_num left outer join service_group sg on l.svc_grp_id = sg.svc_grp_id WHERE l.mbr_id=? AND l.mbr_grp_id=? order by reg_dt desc",
+        "params": ["mbr_id", "mbr_grp_id"],
+        "desc": "link get by mbr_grp_id and mbr_id"
+    },
+    "link_temp_info_list_get" : {
+        "queryString": "SELECT l.*, s.name as svc_name, s.description as svc_desc,sg.name as svc_grp_name from link_temp l left outer join service s on  l.svc_id = s.svc_num left outer join service_group sg on l.svc_grp_id = sg.svc_grp_id WHERE l.mbr_id=? AND l.mbr_grp_id=? order by reg_dt desc",
+        "params": ["mbr_id", "mbr_grp_id"],
+        "desc": "link temp get by mbr_grp_id and mbr_id"
+    },
+    "transfer_info_list_get" : {
+        "queryString": "SELECT t.*, s.name as svc_name, s.description as svc_desc,sg.name as svc_grp_name, el.type as log_type, el.code as log_code, el.message as log_message FROM transfer t LEFT OUTER JOIN error_log el on t.log_seq = el.log_seq INNER JOIN link l ON l.mbr_grp_id= ? AND l.mbr_id= ? INNER JOIN shift.service s ON t.svc_num = s.svc_num INNER JOIN shift.service_group sg ON sg.svc_grp_id = s.svc_grp_id WHERE t.link_num=l.link_num  ORDER BY t.transfer_reg_dt DESC;",
+        "params": ["mbr_grp_id", "mbr_id"],
+        "desc": "transfer get by mbr_grp_id and mbr_id"
     }
 }

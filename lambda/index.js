@@ -17,6 +17,8 @@ const rewardSyncProcessor = require('../processor/reward.sync.js');
 const rewardPromiseProcessor = require('../processor/reward.promise.js');
 const hkAccountInfoProcessor = require('../processor/hkAccount.info.js');
 const klaytnTickerProcessor = require('../processor/klaytn.ticker.js');
+const userInfoProcessor = require("../processor/user.info.js");
+
 
 api.use(['/*'], async(req, res, next) => {
     console.log('Maintenance - ParameterStore Check res', res);
@@ -62,6 +64,9 @@ api.post('/reward/sync', rewardSyncProcessor.reward_sync_POST);
 api.post('/reward/promise', rewardPromiseProcessor.reward_promise_POST);
 api.get('/hkAccount/info', hkAccountInfoProcessor.hkAccount_info_GET);
 api.get('/klaytn/ticker', klaytnTickerProcessor.klaytn_ticker_GET);
+api.get('/user/info', userInfoProcessor.user_info_GET);
+
+
 
 exports.handler = async(event, context, callback) => {
     const type = event.type;
