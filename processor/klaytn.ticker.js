@@ -6,8 +6,8 @@ const smHandler = require('../modules/util_sm.js');
 var jwt = require('jsonwebtoken');
 var moment = require('moment-timezone');
 const axios = require('axios').default;
-const gdacInfo = require('../resource/gdac.json');
 const bithumbInfo = require('../resource/bithumb.json');
+const tokenUtil = require("../modules/util_token.js");
 
 const klaytn_ticker_GET = async(req, res) => {
 
