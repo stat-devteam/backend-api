@@ -17,19 +17,20 @@ Resources:
       AutoPublishAlias: live
       VpcConfig:
         SecurityGroupIds:
-          - sg-0d2984c17634f9cd2
+          - sg-0e434a2241c843ab1
         SubnetIds:
-          - subnet-0a51c713e5dfb2a1f
-          - subnet-078d73d2a5d259f32
+          - subnet-062ae03be1ac048f3
+          - subnet-0fafe4371b0e4312d
       Environment:
         Variables:
-          DB_NAME: shift
+          DB_NAME: stat
           DB_PORT: '3306'
-          DB_USER: shift_lambda
-          DB_ENDPOINT: hk-shift-real-aurora-cluster.cluster-c89v5jzuome9.ap-northeast-2.rds.amazonaws.com
-          DB_SM_ID : shift/release/aurora/shift_lambda
+          DB_USER: stat_lambda
+          DB_ENDPOINT: stat-release-aurora-cluster-instance-1.cie0pivfwnw8.ap-northeast-2.rds.amazonaws.com
+          DB_RO_ENDPOINT: stat-release-aurora-cluster-instance-1-ap-northeast-2c.cie0pivfwnw8.ap-northeast-2.rds.amazonaws.com
+          DB_SM_ID : stat-release-rds-sm
           REGION: ap-northeast-2
-          PLAN_ID : 0rceel
-          SM_ID : shift/release/kasinfo
-          COGNITO_USER_POOL_ID : ap-northeast-2_6L7cvxGnb
+          PLAN_ID : 6kites
+          SM_ID : stat-release-kas-sm
+          COGNITO_USER_POOL_ID : ap-northeast-2_hOuyTXi19
           PARAMETER_STORE_VALUE : 'release_maintenance'

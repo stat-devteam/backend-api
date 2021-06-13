@@ -21,8 +21,8 @@ const userInfoProcessor = require("../processor/user.info.js");
 
 
 api.use(['/*'], async(req, res, next) => {
-    console.log('Maintenance - ParameterStore Check res', res);
-    console.log('Maintenance - ParameterStore Check req', req);
+    console.log('Maintenance - ParameterStore Check res!', res);
+    console.log('Maintenance - ParameterStore Check req!', req);
     const pass = req.query.pass;
     const isMaintenance = await psHandler.getParameterStoreValue(process.env.PARAMETER_STORE_VALUE, 'backend', pass);
     console.log('isMaintenance', isMaintenance)
