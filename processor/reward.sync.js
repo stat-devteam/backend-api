@@ -9,6 +9,7 @@ const kasInfo = require('../resource/kas.json');
 var moment = require('moment-timezone');
 const { DelegatedCheck } = require('../modules/util_klaytn.js');
 var { InsertLogSeq } = require("../modules/utils_error.js");
+const tokenUtil = require("../modules/util_token.js");
 
 const reward_sync_POST = async(req, res) => {
     const secretValue = await smHandler.getSecretValue(process.env.SM_ID);
@@ -86,35 +87,15 @@ const reward_sync_POST = async(req, res) => {
 
 
         //[TASK] INSERT Transfer Table
+
         // [sub] get Current Balance
-        const jsonRpcHeader = {
-            'x-chain-id': kasInfo.xChainId,
-            "Content-Type": "application/json"
-        }
-        const jsonRpcAuth = {
-            username: secretValue.kas_access_key,
-            password: secretValue.kas_secret_access_key,
-        }
-        const jsonRpcBody = { "jsonrpc": "2.0", "method": "klay_getBalance", "params": [userKlaytnAddress, "latest"], "id": 1 }
+        const balanceData = await tokenUtil.getBalanceOf(userKlaytnAddress);
 
-        const jsonRpcResponse = await axios
-            .post(kasInfo.jsonRpcUrl, jsonRpcBody, {
-                headers: jsonRpcHeader,
-                auth: jsonRpcAuth
-            })
-            .catch((err) => {
-                console.log('jsonrpc send fali', err);
-                let errorBody = {
-                    code: 1023,
-                    message: '[KAS] 잔액 조회 에러',
-                };
-                console.log('[400] - (1023) 잔액 조회 에러');
-                console.log('kalynJsonRpcResponse', jsonRpcResponse);
-                return sendRes(res, 400, errorBody)
-            });
-
-        console.log('[KAS] jsonRpcResponse for balance', jsonRpcResponse);
-        const currentBalance = jsonRpcResponse.data.result ? new BigNumber(jsonRpcResponse.data.result).toString(10) : null;
+        if (balanceData.result) {}
+        else {
+            return sendRes(res, 400, { result: false, code: 1023, message: '[KAS] 잔액 조회 에러', info: { code: balanceData.code, message: balanceData.message } });
+        }
+        const currentBalance = balanceData.balance;
 
 
         const txStatus = 'before_submit';
@@ -149,59 +130,28 @@ const reward_sync_POST = async(req, res) => {
         console.log('[SQL] transferSeq', transferSeq);
 
         //[TASK] Klay Transfer
-        const bigNumberAmount = new BigNumber(amount).multipliedBy(new BigNumber(1e+18));
-        const hexAmount = '0x' + bigNumberAmount.toString(16);
+        const sendResult = await tokenUtil.sendToken(hkKlaytnAddress, userKlaytnAddress, amount);
+        console.log('sendResult', sendResult);
 
-        const axiosHeader = {
-            'Authorization': secretValue.kas_authorization,
-            'x-krn': secretValue.kas_x_krn,
-            'Content-Type': 'application/json',
-            'x-chain-id': kasInfo.xChainId,
-        };
+        if (sendResult.result) {
 
-        const sendBody = {
-            from: hkKlaytnAddress,
-            value: hexAmount,
-            to: userKlaytnAddress,
-            memo: memo || 'memo',
-            nonce: 0,
-            gas: 0,
-            submit: true,
-        };
-        console.log('[KAS] sendBody', sendBody)
-
-        const sendResponse = await axios
-            .post(kasInfo.apiUrl + 'tx/fd/value', sendBody, {
-                headers: axiosHeader,
-            })
-            .catch((err) => {
-                return { error: err.response }
-            });
-
-        if (sendResponse.error) {
-            let code = sendResponse.error.data.code;
-            let message = sendResponse.error.data.message;
-
+        }
+        else {
             let errorBody = {
                 code: 2002,
                 message: '[KAS] 클레이 전송 실패',
-                info: '[' + code + '] ' + message
             }
-            console.log('[400] - (2002) 클레이 전송 실패');
-            console.log('[SEND KLAY ERROR]', sendResponse.error);
+            const errorCode = sendResult.code;
+            const errorMessage = sendResult.message;
             const [updateResult, f1] = await pool.query(dbQuery.update_transfer_tx_job.queryString, ['fail', 'done', transferSeq]);
-            console.log('[Transfer Table Update] updateResult', updateResult);
-            console.log('[code]', code)
-            console.log('[message]', message)
-            const transferLogSeq = await InsertLogSeq('transfer', transferSeq, 'KAS', code, message);
-            console.log('transferLogSeq', transferLogSeq);
-
+            const transferLogSeq = await InsertLogSeq('transfer', transferSeq, 'KAS', errorCode, errorMessage);
             return sendRes(res, 400, errorBody)
         }
 
-        const sendResponseData = sendResponse.data;
+
+        const sendResponseData = sendResult.data;
         const txHash = sendResponseData.transactionHash;
-        console.log('[KAS] sendResponse', sendResponse);
+        console.log('[KAS] sendResponse', sendResult);
         console.log('[KAS] txHash', sendResponseData.transactionHash);
 
         //[TASK] POLL Transaction check
@@ -222,9 +172,12 @@ const reward_sync_POST = async(req, res) => {
         let updateJobStatus = null;
         let updateFee = null;
 
+        let pollErrorCode = '';
+        let pollErrorMessage = '';
         await poll(pollFn, pollTimeout, pollInteval).then(
             (res) => {
                 console.log('[poll] response', res);
+                var errorReg = new RegExp("CommitError");
 
                 updateJobStatus = 'done';
                 if (res.status === 'Committed') {
@@ -240,8 +193,10 @@ const reward_sync_POST = async(req, res) => {
                     updateTxStatus = 'success';
 
                 }
-                else if (res.status === 'CommitError') {
+                else if (errorReg.test(res.status)) {
                     updateTxStatus = 'fail';
+                    pollErrorCode = res.txError;
+                    pollErrorMessage = res.errorMessage;
                 }
             },
             (err) => {
@@ -306,7 +261,9 @@ const reward_sync_POST = async(req, res) => {
                 try {
                     const [updateResult, f5] = await pool.query(dbQuery.update_transfer_tx_job.queryString, [updateTxStatus, updateJobStatus, transferSeq]);
                     console.log('[fail] updateResult', updateResult);
-                    return sendRes(res, 400, { code: 1052, message: 'trnasfer transaction CommitError' })
+                    const transferLogSeq = await InsertLogSeq('transfer', transferSeq, 'KAS', pollErrorCode, pollErrorMessage);
+
+                    return sendRes(res, 400, { code: 1052, message: 'trnasfer transaction CommitError', info: { code: pollErrorCode, message: pollErrorMessage } })
                 }
                 catch (err) {
                     console.log('[submit] update Fail');
@@ -340,11 +297,12 @@ function poll(fn, timeout, interval) {
             // If the condition is met, we're done!
             console.log('[POLL] condiftion response', response);
             console.log('[POLL] condiftion status', response.data.status);
+            var errorReg = new RegExp("CommitError");
 
             if (response.data.status === 'Committed') {
                 resolve(response.data);
             }
-            else if (response.data.status === 'CommitError') {
+            else if (errorReg.test(response.data.status)) {
                 resolve(response.data);
             }
             else if (Number(new Date()) < endTime) {

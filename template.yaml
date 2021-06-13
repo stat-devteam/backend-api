@@ -10,24 +10,23 @@ Resources:
       Description: 'BackEnd Lambda Index'
       MemorySize: 128
       Timeout: 120
-      Role: 'arn:aws:iam::180677353921:role/CoredotLambdaSQSRDSCogSMRole'
+      Role: 'arn:aws:iam::151057464517:role/role_lamda_rds_sm'
       AutoPublishAlias: live
       VpcConfig:
         SecurityGroupIds:
-          - sg-0e2bd8387180359c9
+          - sg-0264570acb525ea2c
         SubnetIds:
-          - subnet-0732d7b0216fbe2f7
-          - subnet-078099e1972636375
-          - subnet-08a164a0080a216c4
-          - subnet-00c6531721f8d485a
+          - subnet-046d19f8679e0c3ba
+          - subnet-056eb2522829ac617
       Environment:
         Variables:
-          DB_NAME: shift
+          DB_NAME: stat
           DB_PORT: '3306'
-          DB_USER: coredot
-          DB_ENDPOINT: shift-dev-aurora-cluster.cluster-c89v5jzuome9.ap-northeast-2.rds.amazonaws.com
-          DB_SM_ID : shift/product/aurora/coredot
+          DB_USER: stat_lambda
+          DB_ENDPOINT: stat-dev-aurora-cluster-instance-1.cie0pivfwnw8.ap-northeast-2.rds.amazonaws.com
+          DB_SM_ID : stat-dev-rds-sm
           REGION: ap-northeast-2
-          PLAN_ID : was7u8
-          SM_ID : shift/product/kasinfo
+          PLAN_ID : 7p5oq9
+          SM_ID : stat-dev-kas-sm
+          COGNITO_USER_POOL_ID : ap-northeast-2_FkC6uTaVh
           PARAMETER_STORE_VALUE : 'dev_maintenance'
