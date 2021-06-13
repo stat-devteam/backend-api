@@ -13,7 +13,7 @@ Resources:
       Description: 'BackEnd Lambda Index'
       MemorySize: 128
       Timeout: 120
-      Role: 'arn:aws:iam::180677353921:role/CoredotLambdaSQSRDSCogSMRole'
+      Role: 'arn:aws:iam::151057464517:role/role_lamda_rds_sm'
       AutoPublishAlias: live
       VpcConfig:
         SecurityGroupIds:
