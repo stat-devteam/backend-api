@@ -17,7 +17,7 @@ const link_exist_GET = async(req, res) => {
         }
 
         const [linkCheckRegisteredResult, f1] = await pool.query(dbQuery.link_check_registered.queryString, [memberId, memberGroupId]);
-
+        console.log('linkCheckRegisteredResult', linkCheckRegisteredResult)
         if (linkCheckRegisteredResult.length > 0) {
             let alreadyBody = {
                 result: true,
@@ -30,14 +30,16 @@ const link_exist_GET = async(req, res) => {
         else {
             let emptyBody = {
                 result: false,
+                code: 1001,
+                message: 'Link가 연결되지 않은 유저입니다.'
             };
-            return sendRes(res, 200, emptyBody);
+            return sendRes(res, 400, emptyBody);
         }
 
     }
     catch (err) {
         console.log(err);
-        return sendRes(res, 400, { code: 2011, message: 'ERROR', info: err.message })
+        return sendRes(res, 400, { code: 9000, message: 'Unexpected Error', info: err.message })
     }
 
 }

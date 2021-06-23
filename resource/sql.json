@@ -14,11 +14,6 @@
         "params": [],
         "desc": "service_group get ALL"
     },
-    "link_check_registered": {
-        "queryString": "SELECT * FROM link WHERE mbr_id= ? AND mbr_grp_id=?",
-        "params": ["mbr_id", "mbr_grp_id"],
-        "desc": "link check registered"
-    },
     "service_get": {
         "queryString": "SELECT * FROM service WHERE svc_num = ?",
         "params": ["svc_num"],
@@ -158,5 +153,50 @@
         "queryString": "SELECT t.*, s.name as svc_name, s.description as svc_desc,sg.name as svc_grp_name, el.type as log_type, el.code as log_code, el.message as log_message FROM transfer t LEFT OUTER JOIN error_log el on t.log_seq = el.log_seq INNER JOIN link l ON l.mbr_grp_id= ? AND l.mbr_id= ? INNER JOIN service s ON t.svc_num = s.svc_num INNER JOIN service_group sg ON sg.svc_grp_id = s.svc_grp_id WHERE t.link_num=l.link_num  ORDER BY t.transfer_reg_dt DESC;",
         "params": ["mbr_grp_id", "mbr_id"],
         "desc": "transfer get by mbr_grp_id and mbr_id"
+    },
+    "nft_log_update": {
+        "queryString": "UPDATE nft SET log_seq = ? WHERE nft_seq = ?",
+        "params": ["log_seq", "nft_seq"],
+        "desc": "nft_log_update"
+    },
+    "link_check_registered": {
+        "queryString": "SELECT link_num, mbr_grp_id,convert(mbr_id, CHAR CHARACTER SET utf8) as mbr_id, klip_address, reg_dt, svc_grp_id, svc_id, klip_new FROM link WHERE  mbr_id= ? AND mbr_grp_id=?",
+        "params": ["mbr_id", "mbr_grp_id"],
+        "desc": "link check registered"
+    },
+    "nft_validation_by_mbr_id": {
+        "queryString": "select * from nft where link_num = (select link_num from link l where l.mbr_id =? and l.mbr_grp_id =?) and trader_id=? and tx_status='success' and expire_dt >= NOW()",
+        "params": ["mbr_id", "mbr_grp_id", "trader_id"],
+        "desc": "nft_validation_by_mbr_id 유저 -> 게시글 보기 -> NFT있는지 확인"
+    },
+    "nft_validation_list_all": {
+        "queryString": "select * from nft where tx_status = 'success' and expire_dt >= NOW()",
+        "params": [""],
+        "desc": "nft_validation_list_all (NFT notification Sync)"
+    },
+    "nft_validation_list_all_by_trader_id": {
+        "queryString": "select * from nft where tx_status = 'success' and trader_id= ? and expire_dt >= NOW()",
+        "params": ["trader_id"],
+        "desc": "nft_validation_list_all_by_trader_id (NFT notification Sync)"
+    },
+    "nft_validation_list_page": {
+        "queryString": "select a.* from (select nft_Seq from nft where tx_status='success' and expire_dt >= NOW() limit ?,?) b join nft a on a.nft_Seq=b.nft_Seq",
+        "params": ["page_offset", "page_size"],
+        "desc": "nft_validation_list_all_by_trader_id (NFT notification Sync)"
+    },
+    "nft_validation_list_page_count": {
+        "queryString": "select count(*) as count from (select nft_Seq from nft where tx_status='success' and expire_dt >= NOW()) b join nft a on a.nft_Seq=b.nft_Seq",
+        "params": ["page_offset", "page_size"],
+        "desc": "nft_validation_list_page_count (NFT notification Sync)"
+    },
+    "nft_validation_list_page_by_trader_id": {
+        "queryString": "select a.* from (select nft_Seq from nft where tx_status='success' and expire_dt >= NOW() and trader_id=? limit ?,?) b join nft a on a.nft_Seq=b.nft_Seq",
+        "params": ["trader_id", "page_offset", "page_size"],
+        "desc": "nft_validation_list_all_by_trader_id (NFT notification Sync)"
+    },
+    "nft_validation_list_page_by_trader_id_count": {
+        "queryString": "select count(*) as count from (select nft_Seq from nft where tx_status='success' and expire_dt >= NOW() and trader_id=?) b join nft a on a.nft_Seq=b.nft_Seq",
+        "params": ["trader_id"],
+        "desc": "nft_validation_list_all_by_trader_id (NFT notification Sync)"
     }
 }

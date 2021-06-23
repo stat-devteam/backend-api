@@ -8,7 +8,6 @@ var Base64 = require("js-base64");
 
 const testProcessor = require('../processor/test.js');
 const linkListProcessor = require('../processor/link.list.js');
-const linkExistProcessor = require('../processor/link.exist.js');
 const linkCancelProcessor = require('../processor/link.cancel.js');
 const linkRecoveryProcessor = require('../processor/link.recovery.js');
 const rewardAsyncProcessor = require('../processor/reward.async.js');
@@ -18,6 +17,11 @@ const rewardPromiseProcessor = require('../processor/reward.promise.js');
 const hkAccountInfoProcessor = require('../processor/hkAccount.info.js');
 const klaytnTickerProcessor = require('../processor/klaytn.ticker.js');
 const userInfoProcessor = require("../processor/user.info.js");
+
+//STAT
+const linkExistProcessor = require('../processor/link.exist.js');
+const nftValidationProcessor = require("../processor/nft.validation.js");
+const nftValidationListProcessor = require("../processor/nft.validation.list.js");
 
 
 api.use(['/*'], async(req, res, next) => {
@@ -53,19 +57,23 @@ api.get('/clearCache', async(req, res) => {
 });
 
 
-api.get('/test', testProcessor.test_GET);
-api.get('/link/list', linkListProcessor.link_list_GET);
-api.get('/link/exist', linkExistProcessor.link_exist_GET);
-api.post('/link/cancel', linkCancelProcessor.link_cancel_POST);
-api.post('/link/recovery', linkRecoveryProcessor.link_recovery_POST);
-api.post('/reward/async', rewardAsyncProcessor.reward_async_POST);
-api.get('/reward/status', rewardStatusProcessor.reward_status_GET);
-api.post('/reward/sync', rewardSyncProcessor.reward_sync_POST);
-api.post('/reward/promise', rewardPromiseProcessor.reward_promise_POST);
-api.get('/hkAccount/info', hkAccountInfoProcessor.hkAccount_info_GET);
-api.get('/klaytn/ticker', klaytnTickerProcessor.klaytn_ticker_GET);
-api.get('/user/info', userInfoProcessor.user_info_GET);
+// api.get('/test', testProcessor.test_GET);
+// api.get('/link/list', linkListProcessor.link_list_GET);
+// api.get('/link/exist', linkExistProcessor.link_exist_GET);
+// api.post('/link/cancel', linkCancelProcessor.link_cancel_POST);
+// api.post('/link/recovery', linkRecoveryProcessor.link_recovery_POST);
+// api.post('/reward/async', rewardAsyncProcessor.reward_async_POST);
+// api.get('/reward/status', rewardStatusProcessor.reward_status_GET);
+// api.post('/reward/sync', rewardSyncProcessor.reward_sync_POST);
+// api.post('/reward/promise', rewardPromiseProcessor.reward_promise_POST);
+// api.get('/hkAccount/info', hkAccountInfoProcessor.hkAccount_info_GET);
+// api.get('/klaytn/ticker', klaytnTickerProcessor.klaytn_ticker_GET);
+// api.get('/user/info', userInfoProcessor.user_info_GET);
 
+//stat
+api.get('/link/exist', linkExistProcessor.link_exist_GET);
+api.get('/nft/validation', nftValidationProcessor.nft_validation_GET);
+api.get('/nft/validation/list', nftValidationListProcessor.nft_validation_list_GET);
 
 
 exports.handler = async(event, context, callback) => {
