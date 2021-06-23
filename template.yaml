@@ -30,3 +30,5 @@ Resources:
           SM_ID : stat-dev-kas-sm
           COGNITO_USER_POOL_ID : ap-northeast-2_FkC6uTaVh
           PARAMETER_STORE_VALUE : 'dev_maintenance'
+          S3_IMGAE_BUCKET : stat-dev-nft-img
+          KLIP_SM_ID : stat-dev-klip-sm

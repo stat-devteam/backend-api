@@ -93,7 +93,7 @@ const reward_sync_POST = async(req, res) => {
 
         if (balanceData.result) {}
         else {
-            return sendRes(res, 400, { result: false, code: 1023, message: '[KAS] 잔액 조회 에러', info: { code: balanceData.code, message: balanceData.message } });
+            return sendRes(res, 400, { result: false, code: 1023, message: '[KAS] 잔액 조회 에러', info: balanceData.message });
         }
         const currentBalance = balanceData.balance;
 
@@ -236,7 +236,6 @@ const reward_sync_POST = async(req, res) => {
                 }
 
             case 'submit':
-
                 try {
                     const [updateResult, f5] = await pool.query(dbQuery.update_transfer_tx_job_hash.queryString, [updateTxStatus, updateJobStatus, txHash, transferSeq]);
                     console.log('[success] updateResult', updateResult);
@@ -262,7 +261,6 @@ const reward_sync_POST = async(req, res) => {
                     const [updateResult, f5] = await pool.query(dbQuery.update_transfer_tx_job.queryString, [updateTxStatus, updateJobStatus, transferSeq]);
                     console.log('[fail] updateResult', updateResult);
                     const transferLogSeq = await InsertLogSeq('transfer', transferSeq, 'KAS', pollErrorCode, pollErrorMessage);
-
                     return sendRes(res, 400, { code: 1052, message: 'trnasfer transaction CommitError', info: { code: pollErrorCode, message: pollErrorMessage } })
                 }
                 catch (err) {
