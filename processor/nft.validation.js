@@ -3,6 +3,7 @@
 const dbPool = require('../modules/util_rds_pool.js');
 const dbQuery = require('../resource/sql.json');
 const smHandler = require('../modules/util_sm.js');
+const kasHandler = require('../modules/util_kas.js');
 
 const nft_validation_GET = async(req, res) => {
     console.log('[nft_validation_GET] req', req);
@@ -35,8 +36,38 @@ const nft_validation_GET = async(req, res) => {
             console.log('[400] - (7005) 해당 유저는 해당 트레이더의 NFT를 소유하고 있지 않습니다.');
             return sendRes(res, 400, errorBody);
         }
+        else {
+            return sendRes(res, 200, { result: true });
 
-        return sendRes(res, 200, { result: true });
+        }
+
+        // const tx_hash = nft_validation_by_mbr_id[0].tx_hash;
+        // console.log('tx_hash', tx_hash)
+        // // check KAS Transaction Check
+        // const tx_status = await kasHandler.getTransactionStatus(tx_hash, 'nft');
+        // console.logtx_status;
+        // if (tx_status.result) {
+        
+        //     const status = tx_status.data.status;
+        
+        //     switch (status) {
+        //         case 'Committed':
+        //             return sendRes(res, 200, { result: true });
+        //         default:
+        //             return sendRes(res, 400, { code: 9000, message: 'unknown' });
+        //     }
+        
+        // }
+        // else {
+        //     let errorBody = {
+        //         code: 2002,
+        //         message: 'KAS API ERROR',
+        //         info: tx_status.data
+        //     };
+        //     console.log('[400] - (2002)KAS API ERROR');
+        //     return sendRes(res, 400, errorBody);
+        // }
+
 
 
     }
