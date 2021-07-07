@@ -36,3 +36,4 @@ Resources:
           PARAMETER_STORE_VALUE : 'release_maintenance'
           S3_IMGAE_BUCKET : stat-release-nft-img
           KLIP_SM_ID : stat-release-klip-sm
+          TOKEN_CONTRANCT_ADDRESS : '0x01987adc61782639ea3b8497e030b13a4510cfbe'

@@ -32,3 +32,4 @@ Resources:
           PARAMETER_STORE_VALUE : 'dev_maintenance'
           S3_IMGAE_BUCKET : stat-dev-nft-img
           KLIP_SM_ID : stat-dev-klip-sm
+          TOKEN_CONTRANCT_ADDRESS : '0xc1446f4e7115f18862b02818e0a1ae58da6e5f50'
