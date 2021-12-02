@@ -18,10 +18,17 @@ const hkAccountInfoProcessor = require('../processor/hkAccount.info.js');
 const klaytnTickerProcessor = require('../processor/klaytn.ticker.js');
 const userInfoProcessor = require("../processor/user.info.js");
 
-//STAT
+//STAT - v1
 const linkExistProcessor = require('../processor/link.exist.js');
 const nftValidationProcessor = require("../processor/nft.validation.js");
 const nftValidationListProcessor = require("../processor/nft.validation.list.js");
+
+//STAT - v2
+const nftExistProcessor = require('../processor/nft.exist.js');
+const nftTokenIdProcessor = require("../processor/nft.tokenId.js");
+const nftListProcessor = require('../processor/nft.list.js');
+const nftHistoryProcessor = require('../processor/nft.history.js');
+const nftTokenProcessor = require("../processor/nft.token.js"); // 재활용 소스
 
 
 api.use(['/*'], async(req, res, next) => {
@@ -48,6 +55,13 @@ api.finally((req, res) => {
     console.log("api.finally!");
 });
 
+//5분 마다 alive check
+api.get('/alive', async(req, res) => {
+    console.log('alive', req);
+    let body = { result: true, message: "alive-check" };
+    return res.status(200).cors().json(body);
+});
+
 api.get('/clearCache', async(req, res) => {
     console.log('clearCache', req);
     smHandler.clearCache();
@@ -70,10 +84,17 @@ api.get('/clearCache', async(req, res) => {
 // api.get('/klaytn/ticker', klaytnTickerProcessor.klaytn_ticker_GET);
 // api.get('/user/info', userInfoProcessor.user_info_GET);
 
-//stat
+//stat -v1
 api.get('/link/exist', linkExistProcessor.link_exist_GET);
 api.get('/nft/validation', nftValidationProcessor.nft_validation_GET);
 api.get('/nft/validation/list', nftValidationListProcessor.nft_validation_list_GET);
+
+
+//stat -v2
+api.get('/nft/exist', nftExistProcessor.nft_exist_GET);
+api.get('/nft/list', nftListProcessor.nft_list_GET);
+api.get('/nft/history', nftHistoryProcessor.nft_history_list_GET);
+api.get('/nft/:token_id', nftTokenIdProcessor.nft_tokenId_GET);
 
 
 exports.handler = async(event, context, callback) => {

@@ -198,5 +198,85 @@
         "queryString": "select count(*) as count from (select nft_Seq from nft where tx_status='success' and expire_dt >= NOW() and trader_id=?) b join nft a on a.nft_Seq=b.nft_Seq",
         "params": ["trader_id"],
         "desc": "nft_validation_list_all_by_trader_id (NFT notification Sync)"
+    },
+    "nft_token_get_from_trader": {
+        "queryString": "select * from nft_token nt join trader_publisher tp on nt.publisher_id = tp.id join link l on tp.link_num = l.link_num where l.mbr_id = ? and l.mbr_grp_id = ? and nt.owner = ?",
+        "params": ["mbr_id", "mbr_grp_id", "klip_address"],
+        "desc": "nft_token_get_from_trader"
+    },
+    "nft_token_all_from_trader": {
+        "queryString": "select * from nft_token nt join trader_publisher tp on nt.publisher_id = tp.id join link l on tp.link_num = l.link_num where l.mbr_id = ?",
+        "params": ["mbr_id"],
+        "desc": "nft_token_all_from_trader"
+    },
+    "nft_token_all": {
+        "queryString": "select * from nft_token nt",
+        "params": [""],
+        "desc": "nft_token_all"
+    },
+    "nft_token_list_page_by_trader_id": {
+        "queryString": "select * from nft_token nt join trader_publisher tp on nt.publisher_id = tp.id join link l on tp.link_num = l.link_num where l.mbr_id = ? limit ?, ?",
+        "params": ["mbr_id", "page_offset", "page_size"],
+        "desc": "nft_token_list_page_by_trader_id"
+    },
+    "nft_token_list_page_by_trader_id_count": {
+        "queryString": "select count(*) as count from nft_token nt join trader_publisher tp on nt.publisher_id = tp.id join link l on tp.link_num = l.link_num where l.mbr_id = ?",
+        "params": ["mbr_id"],
+        "desc": "nft_token_list_page_by_trader_id"
+    },
+    "nft_token_list_page": {
+        "queryString": "select * from nft_token nt limit ?, ?",
+        "params": ["page_offset", "page_size"],
+        "desc": "nft_token_list_page"
+    },
+    "nft_token_list_page_count": {
+        "queryString": "select count(*) as count from nft_token nt",
+        "params": [""],
+        "desc": "nft_token_list_page_count"
+    },
+    "nft_token_list_by_member_trader": {
+        "queryString": "select * from nft_token nt where owner = (select klip_address from link where mbr_id= ? and mbr_grp_id=?) and publisher_id in (select publisher_id from trader_publisher where link_num = ( select link_num from link where mbr_id= ? and mbr_grp_id=?)) limit 1;",
+        "params": ["mbr_id", "mbr_grp_id", "trader_id", "mbr_grp_id"],
+        "desc": "해당 멤버가 해당 트레이더의 nft를 소유하고있는지 확인"
+    },
+    "nft_token_by_token_id": {
+        "queryString": "select nt.token_id, nt.token_uri, nt.owner as owner_address, nt.name, nt.description, nt.image, nt.attributes, convert(l.mbr_id, CHAR CHARACTER SET utf8) as owner_mbr_id, l.mbr_grp_id as owner_mbr_grp_id, nt.updated_at from (select * from nft_token where token_id = ?) nt left outer join link l on nt.owner = l.klip_address",
+        "params": ["token_id"],
+        "desc": "toekn 상세 조회"
+    },
+    "nft_token_list_all": {
+        "queryString": "select nt.token_id, nt.token_uri, nt.owner as owner_address, nt.name, nt.description, nt.image, nt.attributes, convert(l.mbr_id, CHAR CHARACTER SET utf8) as owner_mbr_id, l.mbr_grp_id as owner_mbr_grp_id, nt.updated_at from nft_token nt left outer join link l on nt.owner = l.klip_address where nt.mbr_grp_id = ? limit ?,?",
+        "params": ["mbr_grp_id", "pageOffset", "pageSize"],
+        "desc": "nft 전체 조회 by mbr_grp_id"
+    },
+    "nft_token_list_all_count": {
+        "queryString": "select count(*) as total from nft_token nt left outer join link l on nt.owner = l.klip_address where nt.mbr_grp_id = ?",
+        "params": ["mbr_grp_id"],
+        "desc": "nft 전체 totalCount by mbr_grp_id"
+    },
+    "nft_token_list_member": {
+        "queryString": "select nt.token_id, nt.token_uri, nt.owner as owner_address, nt.name, nt.description, nt.image, nt.attributes, convert(l.mbr_id, CHAR CHARACTER SET utf8) as owner_mbr_id, l.mbr_grp_id as owner_mbr_grp_id, nt.updated_at from nft_token nt left outer join link l on nt.owner = l.klip_address where nt.mbr_grp_id = ? and l.mbr_id=? and l.mbr_grp_id =? limit ?,?",
+        "params": ["mbr_grp_id", "mbr_id", "mbr_grp_id", "pageOffset", "pageSize"],
+        "desc": "nft 멤버 조회 by mbr_grp_id"
+    },
+    "nft_token_list_member_count": {
+        "queryString": "select count(*) total from nft_token nt left outer join link l on nt.owner = l.klip_address where nt.mbr_grp_id =? and l.mbr_id=? and l.mbr_grp_id =?",
+        "params": ["mbr_grp_id", "mbr_id", "mbr_grp_id"],
+        "desc": "nft 멤버 totalCount by mbr_grp_id"
+    },
+    "nft_token_list_trader": {
+        "queryString": "select nt.token_id, nt.token_uri, nt.owner as owner_address, nt.name, nt.description, nt.image, nt.attributes, convert(l.mbr_id, CHAR CHARACTER SET utf8) as owner_mbr_id, l.mbr_grp_id as owner_mbr_grp_id, nt.updated_at from (select * from nft_token sub_nt where publisher_id in (select id from trader_publisher sub_tp where sub_tp.link_num = (select link_num from link sub_l where sub_l.mbr_id=? and sub_l.mbr_grp_id=?))) nt left outer join link l on nt.owner = l.klip_address where nt.mbr_grp_id = ? limit ?,?",
+        "params": ["trader_id", "mbr_grp_id", "mbr_grp_id", "pageOffset", "pageSize"],
+        "desc": "nft 트레이더가 발행한 조회 by mbr_grp_id"
+    },
+    "nft_token_list_trader_count": {
+        "queryString": "select count(*) total from (select * from nft_token sub_nt where publisher_id in (select id from trader_publisher sub_tp where sub_tp.link_num = (select link_num from link sub_l where sub_l.mbr_id=? and sub_l.mbr_grp_id=?))) nt left outer join link l on nt.owner = l.klip_address where nt.mbr_grp_id = ?",
+        "params": ["trader_id", "mbr_grp_id", "mbr_grp_id"],
+        "desc": "nft 트레이더가 발행한 totalCount by mbr_grp_id"
+    },
+    "nft_history_list_from_cursor": {
+        "queryString": "select * from nft_history nh where trader_mbr_grp_id = ? and id > ? limit ?",
+        "params": ["mbr_grp_id", "cursor_id", "cursor_size"],
+        "desc": "nft_history_list_from_cursor"
     }
 }
