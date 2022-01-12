@@ -23,10 +23,9 @@ const link_exist_GET = async(req, res) => {
                 result: true,
                 info: linkCheckRegisteredResult[0],
             };
-
             return sendRes(res, 200, alreadyBody);
-
         }
+
         else {
             let emptyBody = {
                 result: false,
