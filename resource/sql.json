@@ -285,7 +285,7 @@
         "desc": "user_token_list"
     },
     "trader_publish_last_list": {
-        "queryString": "select tp.*, convert(l.mbr_id, CHAR CHARACTER SET utf8) as mbr_id from trader_publisher tp join link l on tp.link_num = l.link_num where tp.id in (select MAX(tp.id) from trader_publisher tp join link l on tp.link_num = l.link_num where l.mbr_grp_id = 'st' group by l.link_num)",
+        "queryString": "select tp.*, convert(l.mbr_id, CHAR CHARACTER SET utf8) as mbr_id from trader_publisher tp join link l on tp.link_num = l.link_num where tp.id in (select MAX(tp.id) from trader_publisher tp join link l on tp.link_num = l.link_num where l.mbr_grp_id = ? group by l.link_num)",
         "params": ["mbr_grp_id"],
         "desc": "trader_publish_last_list"
     },
