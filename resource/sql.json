@@ -299,9 +299,19 @@
         "params": ["link_no"],
         "desc": "trader_publish_list_count"
     },
+    "trader_publish_schedule_list": {
+        "queryString": "select * from trader_publisher tp where tp.open_at is not null and tp.status = 'Reservation' and tp.open_at > ?",
+        "params": ["open_at"],
+        "desc": "trader_publish_schedule_list"
+    },
     "trader_sales_sum": {
         "queryString": "select SUM(tp.sales) as sum_sales from trader_publisher tp where tp.link_num = ?",
         "params": ["link_no"],
         "desc": "trader_sales_sum"
+    },
+    "trader_sale_latest" : {
+        "queryString": "select * from trader_publisher where link_num = (select link_num from link where mbr_grp_id=? and mbr_id =?) order by id desc limit 1",
+        "params": ["mbr_grp_id","mbr_id"],
+        "desc": "trader_sale_latest"
     }
 }
