@@ -2,6 +2,7 @@
 
 const dbPool = require('../modules/util_rds_pool.js');
 const dbQuery = require('../resource/sql.json');
+const snsHandler = require('../modules/util_sns.js');
 
 const nft_trader_publish_GET = async (req, res) => {
     console.log('nft_trader_publish_GET', req);
@@ -96,6 +97,39 @@ const nft_trader_last_list_GET = async (req, res) => {
     }
 }
 
+const nft_trader_schedule_GET = async (req, res) => {
+    console.log('nft_trader_schedule_GET', req);
+
+    try {
+        const pool = await dbPool.getPool();
+        
+        const nowAt = Math.round(new Date().getTime() / 1000);
+        
+        console.log('trader_publish_schedule_time', nowAt);
+
+        //[TASK] Get trader last list
+        const [trader_publish_schedule_list, f2] = await pool.query(dbQuery.trader_publish_schedule_list.queryString, [nowAt]);
+        console.log('trader_publish_schedule_list', trader_publish_schedule_list);
+
+        for (let i = 0; i < trader_publish_schedule_list.length; ++i) {
+
+            const message = {
+                publisherId: trader_publish_schedule_list[i].id,
+                isNew: true
+            };
+            const resultNotification = await snsHandler.sendNotification(process.env.SNS_PUBLISH_ARN, message);
+            console.log('resultNotification', resultNotification);
+        }
+        
+        return sendRes(res, 200, { result: true, list: trader_publish_schedule_list });
+
+    }
+    catch (err) {
+        console.log(err);
+        return sendRes(res, 400, { code: 2011, message: 'ERROR', info: err.message })
+    }
+}
+
 
 const sendRes = (res, status, body) => {
     return res.status(status).cors({
@@ -104,4 +138,4 @@ const sendRes = (res, status, body) => {
     }).json(body);
 };
 
-module.exports = { nft_trader_publish_GET, nft_trader_last_list_GET };
+module.exports = { nft_trader_publish_GET, nft_trader_last_list_GET, nft_trader_schedule_GET };

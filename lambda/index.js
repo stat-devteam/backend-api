@@ -31,6 +31,7 @@ const nftHistoryProcessor = require('../processor/nft.history.js');
 const nftTokenProcessor = require("../processor/nft.token.js"); // 재활용 소스
 const nftUserProcessor = require("../processor/nft.user.js");
 const traderNftProcessor = require("../processor/trader.nft.js");
+const traderSaleProcessor = require('../processor/trader.sale.js');
 
 api.use(['/*'], async (req, res, next) => {
     console.log('Maintenance - ParameterStore Check res!', res);
@@ -99,7 +100,8 @@ api.get('/nft/user', nftUserProcessor.nft_user_GET);
 api.get('/nft/:token_id', nftTokenIdProcessor.nft_tokenId_GET);
 api.get('/trader/publish', traderNftProcessor.nft_trader_publish_GET);
 api.get('/trader/list', traderNftProcessor.nft_trader_last_list_GET);
-
+api.get('/trader/schedule', traderNftProcessor.nft_trader_schedule_GET);
+api.get('/trader/sale_info', traderSaleProcessor.trader_sale_info_GET);
 
 exports.handler = async (event, context, callback) => {
     const type = event.type;
