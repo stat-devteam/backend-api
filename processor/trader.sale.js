@@ -43,17 +43,20 @@ const trader_sale_info_GET = async (req, res) => {
 
             //price
             let pebPrice = new BigNumber(target.starting_price);
+            if (target.bidding_price) {
+                pebPrice = new BigNumber(target.bidding_price);
+            }
             let klayUnit = new BigNumber(1e18);
             let klayPrice = pebPrice.dividedBy(klayUnit).toString(10);
-            return_obj.price =Number(klayPrice);
-                
+            return_obj.price = Number(klayPrice);
+
             //start, end Date
             let initUnix = target.expired_at - target.period;
             console.log('target.expired_at',target.expired_at);
             console.log('initUnix',initUnix);
 
-            let startDate  = target.type ==='BuyNow' ? null: moment(target.expired_at * 1000).tz('Asia/Seoul').format("YYYY-MM-DDTHH:mm:ss");
-            let endDate  = target.type ==='BuyNow' ? null:moment(initUnix * 1000).tz('Asia/Seoul').format("YYYY-MM-DDTHH:mm:ss")
+            let endDate  = target.type ==='BuyNow' ? null: moment(target.expired_at * 1000).tz('Asia/Seoul').format("YYYY-MM-DDTHH:mm:ss");
+            let startDate  = target.type ==='BuyNow' ? null:moment(initUnix * 1000).tz('Asia/Seoul').format("YYYY-MM-DDTHH:mm:ss")
             return_obj.startDate =startDate;
             return_obj.endDate =endDate;
             
