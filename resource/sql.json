@@ -300,7 +300,7 @@
         "desc": "trader_publish_list_count"
     },
     "trader_publish_schedule_list": {
-        "queryString": "select * from trader_publisher tp where tp.open_at is not null and tp.status = 'Reservation' and tp.open_at > ?",
+        "queryString": "select * from trader_publisher tp where tp.open_at is not null and tp.status = 'Reservation' and tp.open_at < ?",
         "params": ["open_at"],
         "desc": "trader_publish_schedule_list"
     },
