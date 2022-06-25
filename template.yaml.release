@@ -32,6 +32,8 @@ Resources:
           REGION: ap-northeast-2
           PLAN_ID : 6kites
           SM_ID : stat-release-kas-sm
+          SNS_PUBLISH_ARN : 'arn:aws:sns:ap-northeast-2:151057464517:trader-release-publisher'
+          SNS_CANCEL_ARN : 'arn:aws:sns:ap-northeast-2:151057464517:trader-release-cancel'
           COGNITO_USER_POOL_ID : ap-northeast-2_hOuyTXi19
           PARAMETER_STORE_VALUE : 'release_maintenance'
           S3_IMGAE_BUCKET : stat-release-nft-img
